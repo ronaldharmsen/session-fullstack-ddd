@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Halcyon.HAL;
 using Halcyon.Web.HAL;
-using System;
-using System.Linq.Expressions;
 
 namespace SessionGen
 {
@@ -23,7 +21,12 @@ namespace SessionGen
                 new Ship { Id=1, Name = "MS B", Location="Rome" }
             };
 
-            var response = HAL(nameof(ships), ships);
+            var response = HAL(nameof(ships), ships.ToHALResponses((i) => 
+                new Link[] { 
+                    new Link("_self", CreateShipLink(i.Id)),                    
+                }
+                ));
+
             response.AddLinks(
                 CommandLink<BuyShipCommand>(cmd => BuyShip(cmd))
 			);
@@ -31,12 +34,10 @@ namespace SessionGen
             return Ok(response);
         }
 
-        
-
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public IActionResult Get(int id)
         {
-            return this.HAL(new Ship { Name = "C" }, new Link[] { }, addSelfLinkIfNotExists: true);
+            return this.HAL(new Ship { Name = "C" }, new Link[] { CommandLink<SellShipCommand>(cmd=> SellShip(id,cmd)) }, addSelfLinkIfNotExists: true);
         }
 
         //We are creating a new purchaseorder'document'
@@ -47,15 +48,16 @@ namespace SessionGen
             return Created(CreateShipLink(0), null);
         }
 
-        private string CreateShipLink(int id)
-        {
-            return Url.Link("Default", new { Controller = "ShipsController", Action = "Get", Id = id });
+        [HttpPost("{id}/sale")]
+        [Command(Title="Sell")]
+        public IActionResult SellShip(int id, SellShipCommand cmd)
+        {            
+            return Ok();
         }
 
-        [HttpPost("")]
-        public IActionResult PostSomethingElse(string name)
+        private string CreateShipLink(int id)
         {
-            return Created("", null);
+            return Url.Link(null, new { Controller = "Ships", Action = "Get", Id = id });
         }
     }
 }

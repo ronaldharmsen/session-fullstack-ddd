@@ -11,13 +11,37 @@ using System.Linq.Expressions;
 
 public static class MethodInfoExtentions
 {
- public static IEnumerable<TAttribute> GetCustomAttributes<TAttribute>(this MethodInfo methodInfo, bool inherit)
-  where TAttribute : Attribute
- {
-  IEnumerable<Attribute> attributeObjects = methodInfo.GetCustomAttributes(typeof(TAttribute), inherit);
+    public static IEnumerable<TAttribute> GetCustomAttributes<TAttribute>(this MethodInfo methodInfo, bool inherit)
+     where TAttribute : Attribute
+    {
+        IEnumerable<Attribute> attributeObjects = methodInfo.GetCustomAttributes(typeof(TAttribute), inherit);
 
-  return attributeObjects.Cast<TAttribute>();
- }
+        return attributeObjects.Cast<TAttribute>();
+    }
+}
+
+public static class IEnumerableExtensions
+{
+    public static IEnumerable<HALResponse> ToHALResponses<T>(this IEnumerable<T> collection, Func<T, IEnumerable<Link>> linkGenerator = null)
+    {
+        var halCollection = new List<HALResponse>();
+
+        foreach (var item in collection)
+        {
+            var halItem = new HALResponse(item);
+            if (linkGenerator != null)
+            {
+                var linkList = linkGenerator(item);
+                foreach (var x in linkList)
+                    System.Console.WriteLine(x.Href);
+                halItem.AddLinks(linkList);
+            }
+
+            halCollection.Add(halItem);
+        }
+
+        return halCollection;
+    }
 }
 
 public class HALController : Controller
@@ -30,47 +54,45 @@ public class HALController : Controller
 
     public HALController() : base()
     {
-        
+
     }
 
-    protected HALResponse HAL(string collectionName, IEnumerable collectionToEmbed)
+    protected HALResponse HAL(string collectionName, IEnumerable<HALResponse> collectionToEmbed)
     {
-        var collection = new List<HALResponse>();
-        foreach (var item in collectionToEmbed)
-        {
-            var halItem = new HALResponse(item);
-            collection.Add(halItem);
-        }
-
-        var hal = new HALResponse(new CollectionSummary { Count = collection.Count() })
-                        .AddEmbeddedCollection(collectionName, collection)
+        var hal = new HALResponse(new CollectionSummary { Count = collectionToEmbed.Count() })
+                        .AddEmbeddedCollection(collectionName, collectionToEmbed)
                         .AddSelfLink(HttpContext.Request);
 
         return hal;
     }
 
-    // protected Link CommandLink<T>(Action<T> act) {
-    //     return CommandLink<T>(cmd => act(cmd));
-    // }
-    
     protected Link CommandLink<T>(Expression<Action<T>> fun)
-        {
-            var mce = (MethodCallExpression)fun.Body;
+    {
+        var mce = (MethodCallExpression)fun.Body;
+
+        string controllerName = this.GetType().Name.Replace("Controller", string.Empty);
+        string actionName = mce.Method.Name;
+        var cmdArgument = mce.Arguments.Single(x => x.Type == typeof(T));
+        string commandName = cmdArgument.Type.Name;
+
+        // Get title from attribute or default to command name
+        string commandTitle = commandName;
+        var commandAttribute = mce.Method.GetCustomAttributes<CommandAttribute>(true).FirstOrDefault();
+        if (commandAttribute != null && !string.IsNullOrWhiteSpace(commandAttribute.Title))
+            commandTitle = commandAttribute.Title;
+
+        var link = Url.Link(null, new { Controller = controllerName, Action = actionName });
+        foreach (var p in fun.Parameters)
+            System.Console.WriteLine($"param name: {p.Name}");
             
-            string controllerName = this.GetType().Name.Replace("Controller", string.Empty);
-            string actionName = mce.Method.Name;
-            string commandName = mce.Arguments[0].Type.Name;
+        var idArgument = mce.Arguments.FirstOrDefault(x => x.Type == typeof(Int32));
+        if (idArgument != null)
+            link= Url.Link(null, new { Controller = controllerName, Action = actionName, Id = 0 });
 
-            // Get title from attribute or default to command name
-            string commandTitle = commandName;                        
-            var commandAttribute = mce.Method.GetCustomAttributes<CommandAttribute>(true).FirstOrDefault();            
-            if (commandAttribute != null && !string.IsNullOrWhiteSpace(commandAttribute.Title))
-                commandTitle = commandAttribute.Title;
-
-            return new Link(
-                $"cmd.{commandName}", 
-                Url.Link("Default", new { Controller = controllerName, Action = actionName }), 
-                commandTitle, 
-                "POST");
-        }
+        return new Link(
+            $"cmd.{commandName}",
+            link,
+            commandTitle,
+            "POST");
+    }
 }
