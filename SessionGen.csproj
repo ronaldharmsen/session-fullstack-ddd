@@ -4,6 +4,19 @@
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81;</PackageTargetFallback>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
+    <StartAction>Program</StartAction>
+    <StartProgram>npm start</StartProgram>
+    <ExternalConsole>false</ExternalConsole>
+    <EnvironmentVariables>
+      <Variable name="PATH" value="$PATH:/usr/local/bin" />
+      <Variable name="ASPNETCORE_ENVIRONMENT" value="Development" />
+    </EnvironmentVariables>
+    <ApplicationURL>http://localhost:5000</ApplicationURL>
+    <LaunchUrl>http://localhost:5000</LaunchUrl>
+    <LaunchBrowser>false</LaunchBrowser>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " />
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.1" />
@@ -11,6 +24,7 @@
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="1.1.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.0" />
     <PackageReference Include="Microsoft.DotNet.Watcher.Tools" Version="1.0.0" />
+    <PackageReference Include="Halcyon.Mvc" Version="2.5.1" />
   </ItemGroup>
   <ItemGroup>
     <!-- Files not to show in IDE -->
@@ -21,6 +35,9 @@
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="1.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
   <Target Name="RunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
