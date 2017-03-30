@@ -1,0 +1,25 @@
+<div>
+    <h3>Dynamic list</h3>
+    
+
+    <div *ngIf="debugMode">
+        <h4>Data from {{ url }} :</h4>
+        <p>{{ halData | json }}</p>
+    </div>
+
+    <div>
+        <button *ngFor="let cmd of commandButtons" (click)="execute(cmd)">{{ cmd.title }}</button>
+    </div>
+    <table class="table">
+        <tr >
+            <td *ngFor="let columnHeader of columnTitles">{{ columnHeader }}</td>
+            <td>actions</td>
+        </tr>
+        <tr *ngFor="let item of listData">
+            <td *ngFor="let columnHeader of columnTitles">{{ item[columnHeader] }}</td>
+            <td>
+                <button *ngFor="let itemCmd of getItemCommands(item)" (click)="execute(itemCmd)"> {{ itemCmd.title }}</button>
+            </td>
+        </tr>
+    </table>
+</div>

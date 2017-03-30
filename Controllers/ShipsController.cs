@@ -21,9 +21,10 @@ namespace SessionGen
                 new Ship { Id=1, Name = "MS B", Location="Rome" }
             };
 
-            var response = HAL(nameof(ships), ships.ToHALResponses((i) => 
+            var response = HAL(ships.ToHALResponses((i) => 
                 new Link[] { 
-                    new Link("_self", CreateShipLink(i.Id)),                    
+                    new Link("_self", CreateShipLink(i.Id)),   
+                    CommandLink<SellShipCommand>(cmd=> SellShip(i.Id,cmd))                 
                 }
                 ));
 

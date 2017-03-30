@@ -57,7 +57,7 @@ public class HALController : Controller
 
     }
 
-    protected HALResponse HAL(string collectionName, IEnumerable<HALResponse> collectionToEmbed)
+    protected HALResponse HAL(IEnumerable<HALResponse> collectionToEmbed, string collectionName="data")
     {
         var hal = new HALResponse(new CollectionSummary { Count = collectionToEmbed.Count() })
                         .AddEmbeddedCollection(collectionName, collectionToEmbed)
@@ -84,7 +84,7 @@ public class HALController : Controller
         var link = Url.Link(null, new { Controller = controllerName, Action = actionName });
         foreach (var p in fun.Parameters)
             System.Console.WriteLine($"param name: {p.Name}");
-            
+
         var idArgument = mce.Arguments.FirstOrDefault(x => x.Type == typeof(Int32));
         if (idArgument != null)
             link= Url.Link(null, new { Controller = controllerName, Action = actionName, Id = 0 });
