@@ -11,7 +11,8 @@ export class DynamicListComponent {
     columnTitles: string[];
     listData: any[];
     commandButtons: any[];
-    debugMode: boolean;
+    debugMode: boolean = true;
+    messages: string[] = [];
 
     constructor(private service: DynamicService) {
     }
@@ -71,9 +72,15 @@ export class DynamicListComponent {
                 current.title = 'Details';
 
             if (current && current.title) {
-                let btn: any = current;
-                btn.context = item;
-                btns.push( current );
+                //ugly, to avoid circular ref
+                let btn: any = {
+                    title:   current.title,
+                    href:    current.href,
+                    method:  current.method,
+                    context: item
+                };
+                
+                btns.push( btn );
             }
         } 
 
@@ -84,7 +91,11 @@ export class DynamicListComponent {
         let context: string = 'list';
         if (cmd.context)
             context = cmd.context.id; //fake it a this point
-        console.log(`Executing ${cmd.title} with context ${context}`);
+        
+        // actually execute the command in the framework
+        let msg:string = `Executing ${cmd.title} with context ${context}`;
+        console.log(msg)
+        this.messages.push(msg);
     }
 
     ngOnInit(): void {
