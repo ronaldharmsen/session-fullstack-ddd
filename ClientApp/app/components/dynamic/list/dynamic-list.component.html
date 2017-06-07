@@ -17,12 +17,10 @@
 </table>
 
 <div *ngIf="debugMode">
-
-
     <h4>Commands</h4>
     <ul>
         <li *ngFor="let msg of messages">{{msg}}</li>
     </ul>
-    <!--<h4>Data from {{ url }} :</h4>
-    <p>{{ halData | json }}</p>-->
+    <h4>Data from {{ url }} :</h4>
+    <p>{{ halData | json }}</p>
 </div>

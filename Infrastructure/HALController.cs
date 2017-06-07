@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Halcyon.HAL;
 using Halcyon.Web.HAL;
@@ -82,9 +81,7 @@ public class HALController : Controller
             commandTitle = commandAttribute.Title;
 
         var link = Url.Link(null, new { Controller = controllerName, Action = actionName });
-        foreach (var p in fun.Parameters)
-            System.Console.WriteLine($"param name: {p.Name}");
-
+        
         var idArgument = mce.Arguments.FirstOrDefault(x => x.Type == typeof(Int32));
         if (idArgument != null)
             link= Url.Link(null, new { Controller = controllerName, Action = actionName, Id = 0 });

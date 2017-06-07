@@ -28,7 +28,7 @@ export class DynamicListComponent {
 
     private updateColumnTitles() {
         //Metadata should be available here
-        //No just retrieve column names
+        //Now just retrieve column names
         let result: string[] = [];
 
         if (this.halData && this.halData._embedded) {
@@ -93,6 +93,8 @@ export class DynamicListComponent {
             context = cmd.context.id; //fake it a this point
         
         // actually execute the command in the framework
+        this.service.executeCommand(cmd);
+        
         let msg:string = `Executing ${cmd.title} with context ${context}`;
         console.log(msg)
         this.messages.push(msg);
