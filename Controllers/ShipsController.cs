@@ -39,7 +39,10 @@ namespace SessionGen
         [HttpGet("{id:int}")]
         public IActionResult Get(int id)
         {
-            return this.HAL(new Ship { Name = "C" }, new Link[] { CommandLink<SellShipCommand>(cmd=> SellShip(id,cmd)) }, addSelfLinkIfNotExists: true);
+            return this.HAL(
+                new Ship { Name = "C" }, 
+                new Link[] { CommandLink<SellShipCommand>(cmd=> SellShip(id,cmd)) }, 
+                addSelfLinkIfNotExists: true);
         }
 
         //We are creating a new purchaseorder'document'
@@ -58,12 +61,6 @@ namespace SessionGen
             //Hand off to backend here...
             return Ok();
         }
-
-        // [HttpPost("{id}/viewingappointment")]
-        // [Command(Title="Get appointment")]
-        // public IActionResult LookAtShip(int id, LookAtShipCommand cmd) {
-        //     return Ok();
-        // }
 
         private string CreateShipLink(int id)
         {

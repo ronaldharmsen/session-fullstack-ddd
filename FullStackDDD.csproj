@@ -5,7 +5,7 @@
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81;</PackageTargetFallback>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
-    <StartAction>Program</StartAction>
+    <StartAction>Project</StartAction>
     <StartProgram>npm start</StartProgram>
     <ExternalConsole>false</ExternalConsole>
     <EnvironmentVariables>
@@ -14,7 +14,7 @@
     </EnvironmentVariables>
     <ApplicationURL>http://localhost:5000</ApplicationURL>
     <LaunchUrl>http://localhost:5000</LaunchUrl>
-    <LaunchBrowser>false</LaunchBrowser>
+    <LaunchBrowser>true</LaunchBrowser>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " />
   <ItemGroup>
