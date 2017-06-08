@@ -1,7 +1,7 @@
 
 Microsoft Visual Studio Solution File, Format Version 15.00
 # Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SessionGen", "SessionGen.csproj", "{6C2D4173-7DB7-4DF7-B5CC-AE7B603950FB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FullStackDDD", "FullStackDDD.csproj", "{6C2D4173-7DB7-4DF7-B5CC-AE7B603950FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
