@@ -8,7 +8,7 @@ namespace SessionGen
     [Route("api/[controller]")]
     public class ShipsController : HALController
     {
-        List<Ship> ships = new List<Ship>
+        static List<Ship> ships = new List<Ship>
             {
                 new Ship { Id=0, Name = "MS A", Location="Tel Aviv" },
                 new Ship { Id=1, Name = "MS B", Location="Rome" },
@@ -22,6 +22,7 @@ namespace SessionGen
         [HttpGet()]
         public IActionResult Get()
         {        
+            //Add metadata explicitly
             var response = HAL(ships.ToHALResponses((i) => 
                 new Link[] { 
                     new Link("_self", CreateShipLink(i.Id)),   
@@ -50,15 +51,16 @@ namespace SessionGen
 		[Command(Title="Purchase")]
         public IActionResult BuyShip(BuyShipCommand cmd)
         {
-            //Hand off to backend here...
-            return Created(CreateShipLink(0), null);
+            //Hand off to backend / CQRS Command bus here...
+            int newId = 0;
+            return Created(CreateShipLink(newId), null);
         }
 
         [HttpPost("{id}/sale")]
         [Command(Title="Sell")]
         public IActionResult SellShip(int id, SellShipCommand cmd)
         {            
-            //Hand off to backend here...
+            //Hand off to backend / CQRS Command bus here...
             return Ok();
         }
 

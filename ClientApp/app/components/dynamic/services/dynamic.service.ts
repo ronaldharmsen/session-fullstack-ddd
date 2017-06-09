@@ -18,7 +18,7 @@ export class DynamicService {
   }
 
   executeCommand(cmd: HALLinkDetails) {
-      return this.http.post(cmd.href, {headers: this.headers})
+      return this.http.post(cmd.href, cmd, {headers: this.headers})
                .toPromise()
                .catch(this.handleError);
   }

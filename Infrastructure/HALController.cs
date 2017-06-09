@@ -83,8 +83,9 @@ public class HALController : Controller
         var link = Url.Link(null, new { Controller = controllerName, Action = actionName });
         
         var idArgument = mce.Arguments.FirstOrDefault(x => x.Type == typeof(Int32));
-        if (idArgument != null)
+        if (idArgument != null) {        
             link= Url.Link(null, new { Controller = controllerName, Action = actionName, Id = 0 });
+        }
 
         return new Link(
             $"cmd.{commandName}",
